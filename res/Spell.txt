@@ -1,0 +1,70 @@
+Lethargy	Usable On One Player and Active For One Turn	Target player cannot move on their next turn.	
+Slippery Slope	Usable On One Player and Active For One Turn	Target player rolls the die as usual, but only inward movement is allowed.	
+Updraft	Usable On One Player and Active For One Turn	Affected player rolls the die as usual, but only outward movement is allowed.	
+Forest Walks	Usable on One Player and Active Until Destroyed	The player is stuck in their respective ring. Roll once and move only within the ring (allowed to plant). To break the curse: Roll a 3.	
+Mirror Mirror	Usable on One Player and Active For One Turn	Player teleports to the mirrored tile on the opposite side.	
+Gravitational Pull	Usable Once and Active For One Turn	Every player gets pulled to the middle circle.	
+Exhaustion	Usable on One Player and Active For One Turn	Target player cannot move on their next turn.	
+Ring Pull	Usable on One Player and Active For One Turn	Target player is pulled inwardly by one ring.	
+Ring Push	Usable on One Player and Active For One Turn	Target player is pulled outwardly by one ring.	
+Prohibition	Active For One Set	User chooses a quadrant and no player can move in or out of the boundaries.
+Prohibition	Active For One Set	User chooses a quadrant and no player can move in or out of the boundaries.
+The Great Ring Wall	Active For One Set	User places a wall around one ring. No player can pass into or out of the ring.	Players stuck inside ring will be allowed to move sideways during the duration of this card.
+The Great Ring Wall	Active For One Set	User places a wall around one ring. No player can pass into or out of the ring.	Players stuck inside ring will be allowed to move sideways during the duration of this card.	
+Elemental Diffusion	Active For One Set	User places a wall around each element. No player can pass into or out of any element.	
+Barrier		Usable On One Player and Active For One Turn	The target player's tile and all adjacent tiles cannot be passed into or out of.
+Barrier		Usable On One Player and Active For One Turn	The target player's tile and all adjacent tiles cannot be passed into or out of. 	
+Mark of The Void	Permanent	Choose one tile (excluding checkpoints and tile before checkpoints) without cells. That tile cannot be entered--but can still be exited.	
+Seeker	Activated Immediately And Active Until Destroyed	Beginning next turn, every player loses one cell per turn while the seeker is active. The seeker spawns in the middle circle and is destroyed by having one player land on it. "	
+Tsunami	Used Once And Then Discarded	Choose a tile. Every cell adjacent to the tile is destroyed. Checkpoint tiles cannot be destroyed by this card.
+Tsunami	Used Once And Then Discarded	Choose a tile. Every cell adjacent to the tile is destroyed. Checkpoint tiles cannot be destroyed by this card.	
+Chain Lightning	Used Once And Then Discarded	Select a tile. The user selects a path for the lightning to follow--each subsequent tile must have cells within it. Each tile within the path has all the cells destroyed. 	
+Jackhammer	Active Until Destroyed	Player gains the ability to destroy enemy cells. Each time the player lands on a spot with enemy cells, the player may either choose an enemy cell to destroy OR plant. This ability is destroyed upon being landed on by another player.
+Russian Roulette	Used Once And Then Discarded	Choose a number from 1 to 6. Then roll the die. If your number is the number that you rolled, target player sacrifices half of their checkpoint cells (rounded down).		
+Infiltrate	Used Once And Then Discarded	Choose any board tile and replace the cells with your cells.	
+Assassinate	Used Once And Then Discarded	Sacrifice one checkpoint piece to destroy an opponent's class card and elements that created it. Class card cannot be reused.	
+Key 	Used Once And Then Discarded	Unlocks all checkpoints for one set. (Checkpoint limit still remains the same)	
+Death Dice	Used Once And Then Discarded	Roll the die. Eliminates all the cells on tiles that have cells equal to the number rolled.	
+Menacing Touch	Used Once And Then Discarded	Player may randomly choose to discard one opponent spell card.	
+Oracle	Used Once And Then Discarded	User has the ability to see into the future and change destiny. The player can look at the first 3 cards from the top of the spell or class deck and switch the order of the cards.	
+Wheel of Fate	Used Once And Then Discarded	User has the ability to see into the future and change destiny. The player can look at the first 3 cards from the top of the spell or class deck and switch the order of the cards.	
+Loaded Dice	Used Once And Then Discarded	-3 or +3 to dice roll	
+Planted Bomb	Used Once And Then Discarded	Attach the bomb to one player. Eliminates all cells on player's current tile. This card can affect secure checkpoints.	
+Payday	Permanent	Double the player's amount of cells on current tile. Can exceed the element tile cap. Cannot be used on checkpoints.	
+Gravedigger	Used Once And Then Discarded	Player can trade a card in the spell discard pile with a spell card in the hand.	
+Portal	Used Once And Then Discarded	"User can move the cells from one tile to another tile of equal type (e.g. any element tile to another, empty tile to another empty tile, etc). Cannot be used on checkpoint tiles."	
+Gamble	Used Once And Then Discarded	"Roll a die. On 3, 4, 5, or 6, you lose half of your checkpoint cells. On 1 or 2, you gain that many."	
+Constellation	Activated Immediately	"Everyone must rearrange their cells so that they have at least 1 on each element. If you have below 4 cells, each cell must be on a different element. Even secured and non-secured checkpoint must be moved if they have no other cells to move."	
+Rabbit's Foot	Used Once And Then Discarded	Usable in conjunction with another spell card. You are unaffected by spells this turn.	
+Implosion	Used Once And Then Discarded	Gather your own board cells and place them on one board tile.	
+Reversal	Used Once And Then Discarded	Reverse a spell card to target the user.	
+Class Taxation	Used Once And Then Discarded	Remove an unlocked checkpoint piece for each class. 	
+Roll Twice	Used Once And Then Discarded	Roll die twice.	
+Elemental Distortion	Used Once And Then Discarded	Change one element tile into another element.	
+Target Disruption	Used Once And Then Discarded	Change the target of a spell from one tile to another tile on the board.	
+Incorrect Census	Permanent	Double the player's amount of cells on any single tile. Can exceed the element tile cap. Cannot be used on checkpoints.	
+Peasants' Dream	Used Once And Then Discarded	All your blank tile cells can be placed on element cells within the same quadrant of your choosing.	
+Beacon of Light	Activated Immediately and Active Until Overwritten	The beacon overrides the current beacon in the middle. Any player who lands on that tile becomes immune to all spells.	
+Beacon of Reclamation	Activated Immediately and Active Until Overwritten	The beacon overrides the current beacon in the middle. Players that land on that spot may choose one of their own cells to destroy.	
+Beacon of Haste	Activated Immediately and Active Until Overwritten	The beacon overrides the current beacon in the middle. Players that pass by the spot during the movement phase may +2 to their REMAINING steps.	
+Beacon of the Void	Activated Immediately and Active Until Overwritten	The beacon overrides the current beacon in the middle. Players cannot walk on the middle circle.	
+Law Abiding Citizen? 	Used Once And Then Discarded	One rule may be broken. Players must compromise on the rule that can be broken.	
+Uncapped Mitosis	Permanent	Choose an element tile that will have the cap raised by 1 permanently.
+Uncapped Mitosis	Permanent	Choose an element tile that will have the cap raised by 1 permanently.	
+Fruitless Endeavor	Used Once And Then Discarded	The target player cannot add any cells to the board while this card is active.	
+Rearrange the Spoils	Used Once And Then Discarded	"The player may rearrange the checkpoint pieces, including enemy ones."	
+Cruise Control	Used Once And Then Discarded	"Once activated, the user may control the target player's movement and planting decisions for the duration."	
+Twin Teleport	Used Once And Then Discarded	Move a player to another tile of the same type as their standing tile.	
+Dare Devil	Usable on Card Holder Only	"Guess your roll. If guess right, double your checkpoint pieces, or else transfer all checkpoint tiles to elemental or blank tiles. "	
+Rage Quit	Used Once And Then Discarded	Make a player rage quit and skip his/her turn.	
+Kurby	Active Until Destroyed	"Copies a class ability by landing on a player. However, you lose the class ability if a player lands on you!"	
+Rain	Permanent Until Destroyed	"Pick a quadrant and that quadrant's fire cells are destroyed. Additionally, no fire cells may be planted in the quadrant."	All the other fire elements must have at least one cell on them.
+Drought	Permanent Until Destroyed	"Pick a quadrant and that quadrant's water cells are destroyed. Additionally, no water cells may be planted in the quadrant."	All the other water elements must have at least one cell on them.
+Industrialization	Permanent Until Destroyed	"Pick a quadrant and that quadrant's earth cells are destroyed. Additionally, no earth cells may be planted in the quadrant."	All the other earth elements must have at least one cell on them.
+Barricade	Permanent Until Destroyed	"Pick a quadrant and that quadrant's wind cells are destroyed. Additionally, no wind cells may be planted in the quadrant."	All the other wind elements must have at least one cell on them.
+Magnetism (Scratched until further discussion)	Permanent Until Destroyed	Pick a quadrant and that quadrant becomes affected with a massive magnetic energy. Any player who traverses within the quadrant must move sideways or inwards. Outward movement (away from the center) is prohibited.	Someone must sacrifice one checkpoint cell.
+Cannibalism	Immediately Activated and Active Until Destroyed.	The player becomes unable to plant any cells until the spell is destroyed. Lift the spell is by landing on a friendly cell and consuming it.	
+A New Challenger Approaches!	Immediately Activated and Active For One Turn	"Roll the die once if the player has fewer than 6 cells on the board--otherwise roll twice. Sum the result(s). Compare that number to how many cells you have on the board. If you have lower than sum, you lose the difference in cells."	
+Pit Stop	Immediately Activated and Active For One Turn	Lose your next turn.	
+1% Tax	Immediately Activated and Active For One Turn	Everyone pays up checkpoint pieces! Players with two and under give up one. Player with three and over gives up two. Players with none are excluded.	
+Baby Boomer	Immediately Activated and Active For One Turn	Everyone receives an extra cell on any board tile. Cannot exceed cap limit.	
