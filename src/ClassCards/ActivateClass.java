@@ -21,6 +21,7 @@ public abstract class ActivateClass {
 	boolean metRequirements = false;
 	boolean information = true;
 	boolean counter = false;
+	boolean targetRequired;
 	SpellFinder spellFinder;
 	
 	public void setPlayableState(ArrayList<STATES> state) {
@@ -69,7 +70,7 @@ public abstract class ActivateClass {
 	public void writeInfo(){
 		if(information){
 			for(Player eachPlayer : gps.getPlayers()){
-				eachPlayer.getPlayerGui().setTextPane("Player " + player.getColor() + " has become a "+name);
+				eachPlayer.getPlayerGui().setTextPane("Player " + player.getColor() + " has become a "+name +"\n");
 			}
 			information = false;
 		}
@@ -82,6 +83,16 @@ public abstract class ActivateClass {
 	}
 	public void setSpellFinder(SpellFinder sf){
 		spellFinder = sf;
+	}
+	public void setTargetRequired(boolean status) {
+		targetRequired = status;
+	}
+	public boolean getTargetRequired() {
+		return targetRequired;
+	}
+	public void resetTargetList() {
+		playergui.setPlayerList(false);
+		playergui.playerList.setSelectedIndex(0);
 	}
 	public abstract void runEffect();
 }

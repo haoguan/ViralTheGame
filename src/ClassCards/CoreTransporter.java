@@ -12,7 +12,7 @@ public class CoreTransporter extends ActivateClass{
 		init thread = new init();
 		name = "Core Transporter";
 		try {
-			fx = new Sound("res/coretransporter.wav");
+			fx = new Sound("res/GamePlayState/Sounds/coretransporter.wav");
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -24,7 +24,7 @@ public class CoreTransporter extends ActivateClass{
 		public void run(){
 			while(exist){
 				try {
-					if(gps.getCurrentPlayer().getWindCount() >= 1 && gps.getCurrentPlayer().getClassCards().contains(name)){
+					if(gps.getCurrentPlayer().getWindCount() >= 0 && gps.getCurrentPlayer().getClassCards().contains(name)){
 						writeInfo();
 						setMetRequirements(true);
 						if(playergui.getClassActivate()){

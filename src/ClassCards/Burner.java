@@ -38,13 +38,13 @@ public class Burner extends ActivateClass {
 								STATES returnState = gps.getCurrentState();
 								gps.setState(STATES.USE_SPELL_STATE);
 								while (cellCount != 1) {
-									gps.setTargetTile(null);
+									gps.setSpellTargetTile(null);
 									
-									while (gps.getTargetTile() == null) {
+									while (gps.getSpellTargetTile() == null) {
 										sleep(5);
 									}
-									targetTile = gps.getTargetTile();
-									if (targetTile.removeCell(player)) {
+									targetTile = gps.getSpellTargetTile();
+									if (targetTile.removeCell(player, true)) {
 										cellCount++;
 									} else {
 										playergui.setTextPane("You do not have a cell here\n");
