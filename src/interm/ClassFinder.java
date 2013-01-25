@@ -12,8 +12,10 @@ import ClassCards.ActivateClass;
 import ClassCards.Burner;
 import ClassCards.ChanceMaker;
 import ClassCards.CoreTransporter;
+import ClassCards.Monster;
 import ClassCards.Procreator;
 import ClassCards.StreamTraveler;
+import ClassCards.Theif;
 
 /**
  * ClassFinder manages the storage and execution of the class spells.
@@ -65,10 +67,14 @@ public class ClassFinder {
 		cards.put("Burner", new Burner());
 		cards.put("Procreator", new Procreator());
 		cards.put("Chance Maker", new ChanceMaker());
+		cards.put("Theif", new Theif());
+		cards.put("Monster", new Monster());
 		
 		setStates("Stream Traveler");
+		setStates("Theif", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
 		setStates("Core Transporter", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
 		setStates("Burner", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
+		setStates("Monster", GamePlayState.STATES.ACTIONS_STATE);
 		setStates("Procreator");
 		setStates("Chance Maker");
 	}

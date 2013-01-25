@@ -40,12 +40,16 @@ public class Playable extends Thread {
 					}
 				} else if (className != null && classes.getCards().get(className).isMetRequirements() && classes.getCards().get(className).getPlayableState().contains(gps.getCurrentState()) && classes.getCards().get(className).isCounter()) {
 					if (able) {
+						if (classes.getCards().get(className).getTargetRequired()) {
+							pg.setPlayerList(true);
+						}
 						pg.setActivateCard(true);
 						able = false;
 					}
 				} else {
 					if (!able && gps.currentState != STATES.CHANGE_PLAYER_STATE) {
 						pg.setActivateCard(false);
+						pg.resetTargetList();
 						able = true;
 					}
 				}
@@ -58,12 +62,17 @@ public class Playable extends Thread {
 					}
 				} else if (className != null && classes.getCards().get(className).isMetRequirements() && classes.getCards().get(className).getPlayableState().contains(gps.getCurrentState()) && !classes.getCards().get(className).isCounter()) {
 					if (able) {
+						if (classes.getCards().get(className).getTargetRequired()) {
+							pg.setPlayerList(true);
+						}
 						pg.setActivateCard(true);
 						able = false;
 					}
 				} else {
 					if (!able && gps.currentState != STATES.CHANGE_PLAYER_STATE ) {
+						System.out.println("run\n");
 						pg.setActivateCard(false);
+						pg.resetTargetList();
 						able = true;
 					}
 				}

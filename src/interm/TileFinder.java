@@ -5,33 +5,33 @@ import game.DataLayer;
 import game.Quadruple;
 import game.Tile;
 
+/**
+ * TileFinder is the intermediate class that handles locating
+ * tiles from input polar coordinates and also converts
+ * from polar to rectangular using the center as reference.
+ * @author Hao Guan
+ */
 public class TileFinder {
 	
 	Board myBoard;
 	DataLayer dlayer;
+	
+	/**
+	 * The two parameter constructor requires a Board object and DataLayer object.
+	 * @param board is the associated Board object that contains all the tiles.
+	 * @param dlayer is the DataLayer object that stores shared data.
+	 */
 	public TileFinder(Board board, DataLayer dlayer) {
 		myBoard = board;
 		this.dlayer = dlayer;
-		
 	}
-	
-	
-
-//	public static void main (String[] args) {
-//		Board board = new Board();
-//		TileFinder tileFinder = new TileFinder(board);
-//		System.out.println("X: " + tileFinder.angleToPixels(100, 45)[0] + "   Y: " + tileFinder.angleToPixels(100, 45)[1]);
-//		System.out.println("X: " + tileFinder.angleToPixels(35, 135)[0] + "   Y: " + tileFinder.angleToPixels(35, 135)[1]);
-//		System.out.println("X: " + tileFinder.angleToPixels(100, 225)[0] + "   Y: " + tileFinder.angleToPixels(100, 225)[1]);
-//		System.out.println("X: " + tileFinder.angleToPixels(100,315)[0] + "   Y: " + tileFinder.angleToPixels(100, 315)[1]);
-//	}
 	
 	/**
 	 * angleToPixels() converts the current searched location into a pixel form that is already 
 	 * translated from the center of the board at (350, 350).
 	 * @param radius is the magnitude of the radius from the center of board.
 	 * @param angle is the angle between 0 degree line and radius line in degrees.
-	 * @return
+	 * @return the x and y coordinates of a clicked location.
 	 */
 	public float[] angleToPixels(double radius, double angle) {
 		float y = (float) Math.abs(radius * Math.sin(Math.toRadians(angle))); 
@@ -60,6 +60,13 @@ public class TileFinder {
 		
 	}
 	
+	/**
+	 * findTile() takes an input polar coordinate and finds
+	 * the appropriate tile on the board.
+	 * @param radius is the radius of coordinate.
+	 * @param angle is the angle of the coordinate.
+	 * @return the correct Tile object.
+	 */
 	public Tile findTile(double radius, double angle) {
 		
 		double[] radii;
@@ -68,7 +75,7 @@ public class TileFinder {
 		double highRadius = 0;
 		double lowAngle = 0;
 		double highAngle = 0;
-		boolean chkptsCase = false;
+//		boolean chkptsCase = false;
 		
 		//base case for the center.
 		if (radius <= dlayer.getEndRadius()) {
@@ -129,7 +136,7 @@ public class TileFinder {
 			case 8:
 //				System.out.println("Case 8");
 				angles = myBoard.getRingSevenBounds();
-				chkptsCase = true;
+//				chkptsCase = true;
 				break;
 			default:
 				return null;	
