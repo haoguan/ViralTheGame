@@ -11,8 +11,15 @@ import org.newdawn.slick.Image;
 public class RenderObject {
 	
 	//Integer Representation of types.
-	public final static int MARK_OF_THE_VOID = 0;
-	public final static int SEEKER = 1;
+	public final static int FIRE = 0;
+	public final static int WATER = 1;
+	public final static int WIND = 2;
+	public final static int EARTH = 3;
+	public final static int MARK_OF_THE_VOID = 4;
+	public final static int SEEKER = 5;
+	public final static int BEACONOFLIGHT = 6;
+	public final static int BEACONOFRECLAMATION = 7;
+	public final static int BEACONOFHASTE = 8;
 	
 	int type;
 	Image image;
@@ -42,6 +49,14 @@ public class RenderObject {
 	public void setImage(Image image) {
 		this.image = image;
 	}
+	
+	public int getType() {
+		return type;
+	}
+	
+	public void setType(int type) {
+		this.type = type;
+	}
 
 	public float[] getCoords() {
 		return coords;
@@ -50,6 +65,7 @@ public class RenderObject {
 	public void setCoords(float[] coords) {
 		this.coords = coords;
 	}
+	
 	
 	@Override
 	public int hashCode() {

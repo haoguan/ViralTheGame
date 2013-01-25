@@ -1,13 +1,14 @@
-/*Board.java*/
-
 package game;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//the actual physical board storing players and tiles.
-
+/**
+ * Board is the repository class that initializes all the tiles,
+ * elements for each tile, and establishes the boundaries between the rings.
+ * @author Hao Guan and Jonathan Wu
+ */
 public class Board {
 
 	//HashMap with keys being a 4 element (Quadruple) that stores the 4 values that define a tile.
@@ -36,12 +37,18 @@ public class Board {
 	double startRadius; //this changes after incrementRad()
 	double endRadius; //this changes after incrementRad()
 	double increment;
+	int elemRingKey = 0;
 	int ringKey = 0;
 	int tileID = 0;
 
-
 	DataLayer dlayer;
 
+	/**
+	 * The one parameter constructor requires a DataLayer object
+	 * to store the tiles in a shared environment for other
+	 * classes to access.
+	 * @param dlayer is the shared DataLayer object.
+	 */
 	public Board(DataLayer dlayer) {
 		this.dlayer = dlayer;
 		centerStart = dlayer.getStartRadius();
@@ -51,63 +58,112 @@ public class Board {
 		startRadius = dlayer.getStartRadius();
 		storeTiles();
 		storeBounds();
-
 	}
 
-	/*
-	public static void main (String[] args) {
-		Board board = new Board();
-		board.storeTiles();
-	}
-	*/
 
-	/*
-	 * Getter Functions.
+	/**
+	 * getTiles() returns the datalayer's HashMap of tiles.
+	 * @return a shared HashMap of tiles.
 	 */
 	public HashMap<Quadruple,Tile> getTiles() {
 		return dlayer.getTiles();
 	}
 
+	/**
+	 * getRadiiBounds() returns the array of radius
+	 * bounds in pixels.
+	 * @return the array of double radius bounds
+	 */
 	public double[] getRadiiBounds() {
 		return radiiBounds;
 	}
 
+	/**
+	 * getRingOneBounds() returns the array of
+	 * angle bounds in the first ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingOneBounds() {
 		return ringOneBounds;
 	}
-
+	
+	/**
+	 * getRingTwoBounds() returns the array of
+	 * angle bounds in the second ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingTwoBounds() {
 		return ringTwoBounds;
 	}
 
+	/**
+	 * getRingThreeBounds() returns the array of
+	 * angle bounds in the third ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingThreeBounds() {
 		return ringThreeBounds;
 	}
 
+	/**
+	 * getRingFourBounds() returns the array of
+	 * angle bounds in the fourth ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingFourBounds() {
 		return ringFourBounds;
 	}
 
+	/**
+	 * getRingFiveBounds() returns the array of
+	 * angle bounds in the fifth ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingFiveBounds() {
 		return ringFiveBounds;
 	}
 
+	/**
+	 * getRingSixBounds() returns the array of
+	 * angle bounds in the sixth ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingSixBounds() {
 		return ringSixBounds;
 	}
 
+	/**
+	 * getRingSevenBounds() returns the array of
+	 * angle bounds in the seventh ring.
+	 * @return the double array of angle bounds.
+	 */
 	public double[] getRingSevenBounds() {
 		return ringSevenBounds;
 	}
 
+	/**
+	 * getCenterStart() returns the dlayer
+	 * radius beginning value of the center circle.
+	 * @return the center of the board in pixels.
+	 */
 	public double getCenterStart() {
 		return centerStart;
 	}
 
+	/**
+	 * getCenterEnd() returns the dlayer
+	 * radius end value of the center circle.
+	 * @return the center of the board in pixels.
+	 */
 	public double getCenterEnd() {
 		return centerEnd;
 	}
 
+	/**
+	 * getIncrement() returns increment value between
+	 * each of the rings.
+	 * @return the number of pixels between each ring.
+	 */
 	public double getIncrement() {
 		return increment;
 	}
@@ -187,7 +243,7 @@ public class Board {
 		incrementRad(); 
 
 		setTiles(22.5,45); //ring 3
-		setFourElements(22.5,67.5, WATER,EARTH,FIRE, WIND);
+		setFourElements(22.5,67.5, WATER,EARTH,FIRE,WIND);
 		incrementRad();
 
 		setTiles(0,22.5); //ring 4
@@ -208,6 +264,12 @@ public class Board {
 	}
 
 
+	/**
+	 * setTiles() is a helper function that loops through each
+	 * tile in a ring and sets the appropriate fields.
+	 * @param start is the beginning angle of the ring.
+	 * @param angle is the increment angle in the ring.
+	 */
 	public void setTiles(double start, double angle){
 		ArrayList<Tile> tileList = new ArrayList<Tile>();
 		for(double i = start; i < 360; i+= angle){
@@ -224,15 +286,15 @@ public class Board {
 			tileList.add(tile);
 
 			tileID++;
-//			System.out.println(": Low ang "+ i);
-//			System.out.println(": High ang "+ (i+angle));
-//			System.out.println(": Start Rad "+ startRadius);
-//			System.out.println(": End Rad "+ endRadius);
 		}
 		dlayer.setRingList(ringKey++, tileList);
 		tileID = 0;
-
 	}
+	
+	/**
+	 * setCheckpoints() is a special function that initializes the checkpoint
+	 * tiles and its associated fields.
+	 */
 	public void setCheckpoints(){
 		ArrayList<Tile> tileList = new ArrayList<Tile>();
 		double angleA;
@@ -263,64 +325,103 @@ public class Board {
 	}
 
 
-
+	/**
+	 * setTwoElements() is a helper function that finds two tiles in a ring
+	 * and sets the elements according to the int parameters.
+	 * @param curAngleL is the low angle of the first element tile.
+	 * @param curAngleH is the high angle of the first element tile.
+	 * @param element is the element for the first element tile.
+	 * @param element2 is the element for the second element tile.
+	 */
 	public void setTwoElements(double curAngleL, double curAngleH, int element, int element2){
 		double curRadiusL = startRadius;
 		double curRadiusH = endRadius;
-		ArrayList<Tile> elementList = new ArrayList<Tile>();
+		
+		//check if need new list.
+		ArrayList<Tile> currElems = dlayer.getElements().get(elemRingKey);
+		if (currElems == null)
+			currElems = new ArrayList<Tile>();
 		Quadruple setColor = new Quadruple(curAngleL, curAngleH, curRadiusL, curRadiusH);
 		//add first element.
 		Tile eTile = dlayer.getTiles().get(setColor);
 		eTile.setElement(element);
-		elementList.add(eTile);
+		currElems.add(eTile);
 		//find second in ring.
 		setColor.setAngleL(curAngleL+180);
 		setColor.setAngleH(curAngleH+180);
 		eTile = dlayer.getTiles().get(setColor);
 		eTile.setElement(element2);
-		elementList.add(eTile);
+		currElems.add(eTile);
 		
-		dlayer.setElementList(eTile.getRingNum(), elementList);
+		dlayer.setElementList(elemRingKey, currElems);
 	}
 
 
+	/**
+	 * setFourElements() is a helper functions that finds four tiles in a ring
+	 * and setst he elements according to the int parameters.
+	 * @param curAngleL is the low angle of the first element tile.
+	 * @param curAngleH is the high angle of the first element tile.
+	 * @param element is the element for the first element tile.
+	 * @param element2 is the element for the second element tile.
+	 * @param element3 is the element for the third element tile.
+	 * @param element4 is the element for the fourth element tile.
+	 */
 	public void setFourElements(double curAngleL, double curAngleH, int element, int element2, int element3, int element4){
 		double curRadiusL = startRadius;
 		double curRadiusH = endRadius;
-		ArrayList<Tile> elementList = new ArrayList<Tile>();
+		
+		//check if need new list.
+		ArrayList<Tile> currElems = dlayer.getElements().get(elemRingKey);
+		if (currElems == null)
+			currElems = new ArrayList<Tile>();
 		Quadruple setColor = new Quadruple(curAngleL, curAngleH, curRadiusL, curRadiusH);
 
 		//add first element
 		Tile eTile = dlayer.getTiles().get(setColor);
 		eTile.setElement(element);
-		elementList.add(eTile);
+		currElems.add(eTile);
 		//add second in ring.
 		setColor.setAngleL(curAngleL+=90);
 		setColor.setAngleH(curAngleH+=90);
 		eTile = dlayer.getTiles().get(setColor);
 		eTile.setElement(element2);
-		elementList.add(eTile);
+		currElems.add(eTile);
 		//add third in ring.
 		setColor.setAngleL(curAngleL+=90);
 		setColor.setAngleH(curAngleH+=90);
 		eTile = dlayer.getTiles().get(setColor);
 		eTile.setElement(element3);
-		elementList.add(eTile);
+		currElems.add(eTile);
 		//add fourth in ring.
 		setColor.setAngleL(curAngleL+=90);
 		setColor.setAngleH(curAngleH+=90);
 		eTile = dlayer.getTiles().get(setColor);
 		eTile.setElement(element4);
-		elementList.add(eTile);
+		currElems.add(eTile);
+		
+		dlayer.setElementList(elemRingKey, currElems);
 	}
 
 
+	/**
+	 * incrementRad() is a helper function that increments
+	 * the radius and ring value as storeTiles() looks at each ring.
+	 */
 	public void incrementRad(){
 		startRadius = endRadius;
 		endRadius += increment;
 		endRadius = roundTwoDecimals(endRadius);
+		elemRingKey++;
 	}
 
+	/**
+	 * roundTwoDecimals() is a helper function that rounds
+	 * a double value to two decimals. It is mainly used
+	 * for consistency throughout the board.
+	 * @param d is the double value to be rounded.
+	 * @return a double value with only two decimal places.
+	 */
 	double roundTwoDecimals(double d) {
     	DecimalFormat twoDForm = new DecimalFormat("#.##");
     	return Double.valueOf(twoDForm.format(d));

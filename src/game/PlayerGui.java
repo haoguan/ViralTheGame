@@ -129,8 +129,8 @@ public class PlayerGui extends JComponent {
 	static final int MY_MAXIMUM = 100;
 
 	// Test Variables
-	String cardToTest = "Constellation";
-	String classToTest = "Burner";
+	String cardToTest = "Beacon of Haste";
+	String classToTest = "Monster";
 
 	public PlayerGui() {
 	}
@@ -420,6 +420,7 @@ public class PlayerGui extends JComponent {
 			}
 			playable.setSpellName(cardToTest);
 		} else if (currType == "class") {
+			
 			playable.setClassName(classToTest);
 		}
 
@@ -774,7 +775,7 @@ public class PlayerGui extends JComponent {
 	 * Display the background image
 	 */
 	class BgPanel extends JPanel {
-		Image bg = new ImageIcon("res/ViralBoardEnhanced4.jpg").getImage();
+		Image bg = new ImageIcon("res/GamePlayState/Background/ViralBoardEnhanced4.jpg").getImage();
 
 		public void paintComponent(Graphics g) {
 			g.drawImage(bg, 0, 0, getWidth(), getHeight(), this);
@@ -967,6 +968,7 @@ public class PlayerGui extends JComponent {
 				playable.setRunning(false);
 				// decrementClassCount();
 				activateCard.setEnabled(false);
+				resetTargetList();
 			}
 		}
 	}
@@ -988,6 +990,9 @@ public class PlayerGui extends JComponent {
 			makeMove.setEnabled(false);
 			// gamePlayState.setTrackMouse(false);
 			gamePlayState.setDestination();
+			if (gamePlayState.getDestination() != null) {
+				System.out.println("Destination: (" + gamePlayState.getDestination().getRingNum() + ", " + gamePlayState.getDestination().getTileID() + ")");
+			}
 			gamePlayState.setConfirmMove(true);
 		}
 	}
@@ -995,8 +1000,8 @@ public class PlayerGui extends JComponent {
 	class RollDiceListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			setRollDice(false);
-			// int roll = rand.nextInt(6)+1;
-			int roll = 1;
+//			 int roll = rand.nextInt(6)+1;
+			int roll = 6;
 			setTextPane("You rolled a " + roll + ".\n");
 			player.setRoll(roll);
 			rolled = true;
@@ -1046,10 +1051,8 @@ public class PlayerGui extends JComponent {
 				// check if chkpt tile and if so, make sure other chkpts have at least one cell too.
 				if (player.getCurrentTile().isLocked() && player.getCurrentTile().hasCells()) {
 					for (Tile chkpt : getGPS().getDLayer().getRingList().get(7)) {
-						if (!chkpt.hasCells()) {
-							player.getPlayerGui().setTextPane("Cannot plant. Checkpoint is locked.\n");
-							canPlant = false;
-							break;
+						if (chkpt.hasCells()) {
+							chkpt.getCellStorage().get(player);
 						}
 					}
 				}
@@ -1077,6 +1080,13 @@ public class PlayerGui extends JComponent {
 			}
 		}
 
+	}
+	/**
+	 * Reset the playerList to none
+	 */
+	public void resetTargetList() {
+		setPlayerList(false);
+		playerList.setSelectedIndex(0);
 	}
 	
 	// Getters

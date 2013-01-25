@@ -38,11 +38,13 @@ public class Player {
 	Tile currentTile;
 	Position currentPosition;
 	float playerCoords[];
+	
+	boolean canTarget = true;
 
 	// cell info
 	ArrayList<Cell> cellList = new ArrayList<Cell>(); // need to max cap it at 10.
 
-	boolean myTurn = false;
+//	boolean myTurn = false;
 
 	/**
 	 * Constructor for Player class
@@ -133,9 +135,9 @@ public class Player {
 	 * Setter functions.
 	 */
 
-	public void setTurn(boolean turn) {
-		myTurn = turn;
-	}
+//	public void setTurn(boolean turn) {
+//		myTurn = turn;
+//	}
 
 	public void setImage(Image image) {
 		sprite = image;
@@ -156,13 +158,25 @@ public class Player {
 	public void setScale(float scale) {
 		picScale = scale;
 	}
+	
+	public void setCanTarget(boolean canTarget) {
+		this.canTarget = canTarget;
+	}
 
 	/*
 	 * Getter functions.
 	 */
 	
+	public boolean canTarget() {
+		return canTarget;
+	}
+	
 	public int getNumCells() {
 		return cellList.size();
+	}
+	
+	public int getCellsLeft() {
+		return cellsLeft;
 	}
 
 	public ArrayList<Cell> getCellList() {
@@ -173,9 +187,9 @@ public class Player {
 		return playerCoords;
 	}
 
-	public boolean getTurn() {
-		return myTurn;
-	}
+//	public boolean getTurn() {
+//		return myTurn;
+//	}
 
 	public Image getImage() {
 		return sprite;

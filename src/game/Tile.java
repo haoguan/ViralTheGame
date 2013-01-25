@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
+
 import main.GamePlayState;
 
 public class Tile {
@@ -53,6 +56,7 @@ public class Tile {
 	double difference;
 	Position renderObjLoc;
 	RenderObject renderObj = null;
+	RenderObject beaconObj = null;
 
 	HashMap<Cell, Player> cellStorage = new HashMap<Cell, Player>();
 	ArrayList<Position> playerPositions = new ArrayList<Position>();
@@ -77,8 +81,10 @@ public class Tile {
 	int tileID;
 	Double position;
 	DataLayer dlayer = new DataLayer();
-
-
+	Sound removeCell;
+	
+	//special variable to change roll.
+	int alterRoll = -1; //normally want to decrement by 1, but if special card changes this, can extend your turn.
 
 	/**
 	 * Constructs an empty tile with the low and high angles along with the low and high radiuses.
@@ -98,6 +104,11 @@ public class Tile {
 		oneHalfRadius = difference/2 + lowRadius;
 		oneEighthRadius = lowRadius + difference*0.45;
 		sevenEighthRadius = highRadius - difference*0.3;
+		try {
+			removeCell = new Sound("res/GamePlayState/Sounds/removeCells.wav");
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
 	}
 	
 //	public Tile(Tile clone) {
@@ -201,7 +212,29 @@ public class Tile {
 	public void setRenderObj(RenderObject renderObj) {
 		this.renderObj = renderObj;
 	}
+	
+	//getting and setting alterRoll
+	public int getAlterRoll() {
+		return alterRoll;
+	}
 
+	public void setAlterRoll(int alterRoll) {
+		this.alterRoll = alterRoll;
+	}
+	
+	//getting and setting beacon
+	public Position getBeaconObjLoc() {
+		return renderObjLoc;
+	}
+	
+	public RenderObject getBeaconObj() {
+		return beaconObj;
+	}
+	
+	public void setBeaconObj(RenderObject beaconObj) {
+		this.beaconObj = beaconObj;
+	}
+	
 	// Getting and setting the ring numbers and tileIDs.
 	public Integer getRingNum() {
 		return ringNum;
@@ -258,212 +291,32 @@ public class Tile {
 		return dlayer;
 	}
 
-
+	
 	public void setAdjacentTiles() {
-
-		//the potential tiles to be stored.
-		AdjacentTile tile;
-		int lowerTileIdx;
-		int higherTileIdx;
 
 		//case for center
 		if (ringNum == 0) {
-			//stores all four of ring 1's tiles.
-			for (int i = 0; i < 4; i++) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(i), true);
-				availableTiles.add(tile);
+			ArrayList<Tile> tiles = findUpperAdjCenter();
+			for (Tile tile : tiles) {
+				AdjacentTile adjTile = new AdjacentTile(tile, true);
+				availableTiles.add(adjTile);
 			}
 		}
-		//case for ring 1.
-		else if (ringNum == 1) {
-			//only tile below is center.
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(0), true);
-			availableTiles.add(tile);
-
-			//find tiles above ring 1: multiply tileID by 2 and take the next 2 tiles in ring 2.
-			higherTileIdx = tileID * 2;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-
-			higherTileIdx++;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-
-
-		}
-		//case for ring 2.
-		else if (ringNum == 2) {
-			//find tiles adjacent that are below ring 2: after every two iterations, increment idx by 1.
-			lowerTileIdx = tileID/2;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//find tiles adjacent that are above ring 2.
-			higherTileIdx = tileID; //there is one tile in ring 3 that has same tileID.
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-
-			//special case for first tile in ring 2, where upper is last tile in ring 3.
-			if (tileID == 0) {
-				higherTileIdx = dlayer.getRingList().get(ringNum+1).size() - 1;
-			}
-			else {
-				higherTileIdx = tileID - 1;
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-		}
-		else if (ringNum == 3) {
-			//find tiles below ring 3: one tile in ring2 with same TileID. Take TileID+1 too.
-			lowerTileIdx = tileID;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//exception for last tile, where TileID+1 is 0 in ring2.
-			if (tileID == dlayer.getRingList().get(ringNum).size() - 1) {
-				lowerTileIdx = 0;
-			}
-			else {
-				lowerTileIdx = tileID + 1;
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//find tiles adjacent that are above ring 3: one will always be tileNum*2 + 1, and other will be +1 of it.
-			higherTileIdx = (tileID * 2) + 1;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-
-			//exception for last tile, where higherTileIdx is 0, not higherTileIdx + 1.
-			if (tileID == dlayer.getRingList().get(ringNum).size() - 1) {
-				higherTileIdx = 0;
-			}
-			else {
-				higherTileIdx++;
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-		}
-		else if (ringNum == 4) {
-			//find tiles adjacent that are below ring 4: after every two iterations, increment idx by 1.
-			lowerTileIdx = 0;
-			//exception for when tileID = 0. Lower is last tile in ring 3.
-			if (tileID == 0) {
-				lowerTileIdx = dlayer.getRingList().get(ringNum-1).size() - 1;
-			}
-			else {
-				if (tileID % 2 == 0) {
-					lowerTileIdx = (tileID/2) - 1;
-				}
-				else {
-					lowerTileIdx = tileID/2;
-				}
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//find tiles adjacent above ring 4: one will always be same as TileID. Other will be TileID-1.
-			higherTileIdx = tileID;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-
-			//exception for when tileID = 0. Higher is actually last tile in ring 5.
-			if (tileID == 0) {
-				higherTileIdx = dlayer.getRingList().get(ringNum+1).size() - 1;
-			}
-			else {
-				higherTileIdx--;
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-		}
-		else if (ringNum == 5) {
-			//find tiles adjacent below ring 5: one will always be TileID. Other will be TileID+1.
-			lowerTileIdx = tileID;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//exception for last tile in ring 5, where next lower tile is 0.
-			if (tileID == dlayer.getRingList().get(ringNum).size() - 1) {
-				lowerTileIdx = 0;
-			}
-			else {
-				lowerTileIdx++;
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//find tiles adjacent above ring 5: one will be (tileID * 2) + 1, other will be +1 that.
-			higherTileIdx = (tileID*2) + 1;
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-
-			//exception for last tile in ring 5, where next upper tile is 0.
-			if (tileID == dlayer.getRingList().get(ringNum).size() - 1) {
-				higherTileIdx = 0;
-			}
-			else {
-				higherTileIdx++;
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(higherTileIdx), true);
-			availableTiles.add(tile);
-		}
-		else if (ringNum == 6) {
-			//find tiles adjacent below ring 6
-			lowerTileIdx = 0;
-			if (tileID == 0) {
-				lowerTileIdx = 15;
-			}
-			else {
-				if (tileID % 2 == 0) {
-					lowerTileIdx = (tileID/2) - 1;
-				}
-				else {
-					lowerTileIdx = tileID/2;
-				}
-			}
-			tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(lowerTileIdx), true);
-			availableTiles.add(tile);
-
-			//find tiles above ring 6 for select tiles.
-			if (tileID == ADJCHK1) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(0), true);
-				availableTiles.add(tile);
-			}
-			else if (tileID == ADJCHK2) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(1), true);
-				availableTiles.add(tile);
-			}
-			else if (tileID == ADJCHK3) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(2), true);
-				availableTiles.add(tile);
-			}
-			else if (tileID == ADJCHK4) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum+1).get(3), true);
-				availableTiles.add(tile);
-			}
-
-
-		}
-		//find lower adjacent tiles in ring 7.
 		else {
-			if (tileID == 0) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(ADJCHK1), true);
+			ArrayList<Tile> upperTiles = findUpperAdjTiles(this);
+			ArrayList<Tile> lowerTiles = findLowerAdjTiles(this);
+			
+			for (Tile tile : upperTiles) {
+				AdjacentTile adjTile = new AdjacentTile(tile, true);
+				availableTiles.add(adjTile);
 			}
-			else if (tileID == 1) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(ADJCHK2), true);
+			for (Tile tile : lowerTiles) {
+				AdjacentTile adjTile = new AdjacentTile(tile, true);
+				availableTiles.add(adjTile);
 			}
-			else if (tileID == 2) {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(ADJCHK3), true);
+			if (ringNum != 0 && ringNum != 7) {
+				addAdjOnSameRing();
 			}
-			else {
-				tile = new AdjacentTile(dlayer.getRingList().get(ringNum-1).get(ADJCHK4), true);
-			}
-			availableTiles.add(tile);
-		}
-		//find tiles that are on the same ring except for ring 0 and ring 7.
-		if (ringNum != 0 && ringNum != 7) {
-			addAdjOnSameRing();
 		}
 	}
 
@@ -481,6 +334,7 @@ public class Tile {
 		}
 		return upperAdjs;
 	}
+	
 
 	public ArrayList<Tile> findUpperAdjTiles(Tile curTile) {
 		Tile adjTile1 = null;
@@ -753,6 +607,9 @@ public class Tile {
 
 	}
 
+	/**
+	 * setRenderObjLoc() creates the location for the renderObj depending on the tile.
+	 */
 	public void setRenderObjLoc() {
 
 		//special case for center
@@ -870,13 +727,58 @@ public class Tile {
 //	public void removeFromCellStorage(Cell cell) {
 //		cellStorage.remove(cell);
 //	}
+	
+	/**
+	 * addCell(2 params) adds one cell to targetTile for currentPlayer.
+	 * @param currentPlayer is the player that plants the cell.
+	 * @param gps is the GamePlayState instance where cell will be controlled.
+	 */
+	public void addCell(Player currentPlayer, GamePlayState gps) {
+		Cell newCell = new Cell(currentPlayer, this);
+		float[] cellCoords = gps.getTileFinder().angleToPixels(newCell.getCurrentPosition().getPositionRadius(), newCell.getCurrentPosition().getAngle());
+		newCell.setCellCoords(cellCoords);
+		newCell.setImage(gps.getCellImage(currentPlayer));
+		currentPlayer.getCellList().add(newCell);
+		// add element to player's repository of elements.
+		int element = getElement();
+		currentPlayer.addElement(element);
+		// decrease cell count
+		addToCellStorage(currentPlayer, newCell);
+		currentPlayer.decrementCellLeft();
+	}
 
-	public boolean removeCell(Player player) {
+	/**
+	 * addCell (3 params) adds a variable amount of cells to targetTile for currentPlayer.
+	 * @param currentPlayer is the player that plants the cell.
+	 * @param targetTile is the tile where the cell will be located.
+	 * @param gps is the GamePlayState instance where cell will be controlled.
+	 * @param numToAdd is the number of cells to add to the tile.
+	 */
+	public void addCell(Player currentPlayer, GamePlayState gps, int numToAdd) {
+		for (int i = 0; i < numToAdd; i++) {
+			Cell newCell = new Cell(currentPlayer, this);
+			float[] cellCoords = gps.getTileFinder().angleToPixels(newCell.getCurrentPosition().getPositionRadius(), newCell.getCurrentPosition().getAngle());
+			newCell.setCellCoords(cellCoords);
+			newCell.setImage(gps.getCellImage(currentPlayer));
+			currentPlayer.getCellList().add(newCell);
+			// add element to player's repository of elements.
+			int element = getElement();
+			currentPlayer.addElement(element);
+			// decrease cell count
+			addToCellStorage(currentPlayer, newCell);
+			currentPlayer.decrementCellLeft();
+		}
+	}
+
+	public boolean removeCell(Player player, boolean defaultSound) {
 		boolean found = false;
 		if (cellStorage.size() != 0) {
 			for (Iterator<Cell> iter = cellStorage.keySet().iterator(); iter.hasNext(); ) {
 				Cell nextCell = iter.next();
 				if (player == cellStorage.get(nextCell)) {
+					if(defaultSound){
+						removeCell.play();
+					}
 					player.incrementCellLeft();
 					player.removeElement(getElement());
 					leaveCell(nextCell);
@@ -942,7 +844,6 @@ public class Tile {
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		temp = Double.doubleToLongBits(angleL);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + element;
 		temp = Double.doubleToLongBits(radiusH);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		temp = Double.doubleToLongBits(radiusL);
@@ -964,8 +865,6 @@ public class Tile {
 		if (Double.doubleToLongBits(angleH) != Double.doubleToLongBits(other.angleH))
 			return false;
 		if (Double.doubleToLongBits(angleL) != Double.doubleToLongBits(other.angleL))
-			return false;
-		if (element != other.element)
 			return false;
 		if (Double.doubleToLongBits(radiusH) != Double.doubleToLongBits(other.radiusH))
 			return false;
