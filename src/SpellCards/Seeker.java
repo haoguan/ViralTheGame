@@ -28,6 +28,7 @@ public class Seeker extends ActivateSpell{
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
 		return isSuccessRun();
@@ -47,14 +48,13 @@ public class Seeker extends ActivateSpell{
 			Random rand = new Random();
 			boolean first = true;
 			boolean removed = false;
-			resetDefaultState();
 			while(active){
 				try {
 					if (first) {
 						writeToAllPlayers("Seeker has spawned in the center! Destroy it by having a player land on it!\n");
 						//store the new object to render.
 						Tile center = dlayer.getRingList().get(0).get(0);
-						storeRenderObject(RenderObject.SEEKER, center, new Image("res/Seeker.png"));
+						storeRenderObject(RenderObject.SEEKER, center, gps.getSeeker());
 						first = false;
 					}
 					
@@ -92,7 +92,7 @@ public class Seeker extends ActivateSpell{
 					else {
 						sleep(5);
 					}
-				} catch (InterruptedException e) {} catch (SlickException e) {}	
+				} catch (InterruptedException e) {}	
 			}
 			return;
 		}

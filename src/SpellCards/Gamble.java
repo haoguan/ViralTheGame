@@ -17,15 +17,10 @@ public class Gamble extends ActivateSpell {
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return isSuccessRun();
+		return isSuccessRun(); //no way for this card to fail.
 	}
 	
 	class init extends Thread{
@@ -41,7 +36,6 @@ public class Gamble extends ActivateSpell {
 		public void run(){
 			STATES returnState = gps.getCurrentState();
 			Tile targetTile;
-			resetDefaultState();
 			try {
 				while(active){
 					playergui.setTextPane("Please roll the die.\n");
@@ -55,7 +49,6 @@ public class Gamble extends ActivateSpell {
 					gps.setState(STATES.USE_SPELL_STATE);
 					int numCheckpoints = playergui.getPlayer().getCheckPoints();
 					int halfChkpt = Math.round((float)numCheckpoints/2);
-					System.out.println(halfChkpt);
 					//greater than 3, halve checkpoint tiles. 
 					if (roll >= 3) {
 						playergui.setTextPane("Simply unfortunate.\n");
@@ -65,12 +58,12 @@ public class Gamble extends ActivateSpell {
 							while (!gps.getNewInput()) {
 								sleep(5);
 							}
-							targetTile = gps.getTargetTile();
+							targetTile = gps.getSpellTargetTile();
 							if (targetTile.getElement() != Tile.CHECKPOINT || !targetTile.containsCell(playergui.getPlayer())) {
 								playergui.setTextPane("The tile is not an appropriate target.\n");
 							}
 							else {
-								targetTile.removeCell(playergui.getPlayer());
+								targetTile.removeCell(playergui.getPlayer(), true);
 								halfChkpt--;
 							}
 						}
@@ -85,7 +78,7 @@ public class Gamble extends ActivateSpell {
 							while (!gps.getNewInput()) {
 								sleep(5);
 							}
-							targetTile = gps.getTargetTile();
+							targetTile = gps.getSpellTargetTile();
 							if (targetTile.getElement() != Tile.CHECKPOINT) {
 								playergui.setTextPane("Please select a checkpoint tile.\n");
 							}
@@ -93,7 +86,7 @@ public class Gamble extends ActivateSpell {
 								playergui.setTextPane("Checkpoint tile is already full.\n");
 							}
 							else {
-								gps.addCell(playergui.getPlayer(), targetTile, gps);
+								targetTile.addCell(playergui.getPlayer(), gps);
 								halfChkpt--;
 							}
 						}

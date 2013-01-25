@@ -20,6 +20,7 @@ public class Key extends ActivateSpell{
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
 		return isSuccessRun();
@@ -36,7 +37,6 @@ public class Key extends ActivateSpell{
 		}
 		
 		public void run(){
-			resetDefaultState();
 			boolean changed = false;
 			while(active){
 				try {

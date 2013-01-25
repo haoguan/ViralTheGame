@@ -24,13 +24,13 @@ public class ChainLightning extends ActivateSpell{
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();
 	}
@@ -50,23 +50,23 @@ public class ChainLightning extends ActivateSpell{
 			ArrayList<Tile> targetedTiles = new ArrayList<Tile>();
 			Tile targetTile;
 			Tile lastTargetTile;
-			resetDefaultState();
 			try {
 				while(active){
 					playergui.setTextPane("Please select a tile for the source point of the lightning.\n");
-					gps.setTargetTile(null);
+					gps.setSpellTargetTile(null);
 					gps.setState(STATES.USE_SPELL_STATE);
-					while (gps.getTargetTile() == null) {
+					while (gps.getSpellTargetTile() == null) {
 						sleep(5);
 					}
-					targetTile = gps.getTargetTile();
+					targetTile = gps.getSpellTargetTile();
 					//conditions for eligibility
 					if (!targetTile.hasCells()) {
-						gps.setTargetTile(null);
+						gps.setSpellTargetTile(null);
 						gps.setState(returnState);
 						failureToPlay("No cells located on targeted tile.\n");
 					}
 					else {
+						setCheckSuccess(true);
 						lastTargetTile = targetTile; //make them equal.
 						String message = ("Player " + playergui.getPlayer().getColor() + " has selected (" + 
 								targetTile.getRingNum() + ", " + targetTile.getTileID() + ").\n");
@@ -83,7 +83,7 @@ public class ChainLightning extends ActivateSpell{
 							while (!gps.getNewInput()) {
 								sleep(5);
 							}
-							targetTile = gps.getTargetTile();
+							targetTile = gps.getSpellTargetTile();
 						}
 						writeToAllPlayers("Lightning has destroyed all cells in path tiles.\n");
 						//player has clicked invalid tile to end spell.
@@ -95,7 +95,6 @@ public class ChainLightning extends ActivateSpell{
 					}
 				}
 			} catch (InterruptedException e) {}
-			setActive(true); //resetting the active boolean.
 			return;
 		}
 	}

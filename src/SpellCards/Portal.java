@@ -16,13 +16,14 @@ public class Portal extends ActivateSpell {
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();  //no possible way for exception, so just return true.
 	}
@@ -41,16 +42,15 @@ public class Portal extends ActivateSpell {
 			STATES returnState = gps.getCurrentState();
 			Tile targetTile;
 			Tile lastTargetTile;
-			resetDefaultState();
 			try {
 				while(active){
 					playergui.setTextPane("Select the source tile.\n");
-					gps.setTargetTile(null);
+					gps.setSpellTargetTile(null);
 					gps.setState(STATES.USE_SPELL_STATE);
-					while (gps.getTargetTile() == null) {
+					while (gps.getSpellTargetTile() == null) {
 						sleep(5);
 					}
-					targetTile = gps.getTargetTile();
+					targetTile = gps.getSpellTargetTile();
 					//conditions for successful play.
 					if (!targetTile.hasCells()) {
 						gps.setState(returnState);
@@ -61,9 +61,7 @@ public class Portal extends ActivateSpell {
 						failureToPlay("Cannot select checkpoint tiles!\n");
 					}
 					else {
-						String message = ("Player " + playergui.getPlayer().getColor() + " has selected (" + 
-								targetTile.getRingNum() + ", " + targetTile.getTileID() + ").\n");
-						writeToAllPlayers(message);
+						setCheckSuccess(true);
 						//store the source tile.
 						lastTargetTile = targetTile;
 						gps.setNewInput(false);
@@ -73,7 +71,7 @@ public class Portal extends ActivateSpell {
 						while (!gps.getNewInput()) {
 							sleep(5);
 						}
-						targetTile = gps.getTargetTile();
+						targetTile = gps.getSpellTargetTile();
 						
 						//find how many cells to move and remove from old tile.
 						int numCells = lastTargetTile.findNumCells(playergui.getPlayer());
@@ -84,7 +82,7 @@ public class Portal extends ActivateSpell {
 						else {
 							lastTargetTile.removeAllCells(playergui.getPlayer());
 							//add them on new tile.
-							gps.addCell(playergui.getPlayer(), targetTile, gps, numCells);
+							targetTile.addCell(playergui.getPlayer(), gps, numCells);
 							playergui.setTextPane("Cells have been moved.\n");
 							gps.setState(returnState);
 							setActive(false);

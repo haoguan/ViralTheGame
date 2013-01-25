@@ -130,6 +130,22 @@ public abstract class ActivateSpell extends SpellCard {
 		}
 	}
 	
+	public void storeBeaconObject(int key, Tile targetTile, Image image) {
+		float[] coords = gps.getTileFinder().angleToPixels(targetTile.getRenderObjLoc().getPositionRadius(), targetTile.getRenderObjLoc().getAngle());
+		RenderObject obj = new RenderObject(key, targetTile, image, coords);
+		targetTile.setBeaconObj(obj);
+		dlayer.getRenderObjectsArray().add(obj);
+		if (!dlayer.getRenderObjects().containsKey(key)) {
+			ArrayList<RenderObject> newList = new ArrayList<RenderObject>();
+			newList.add(obj);
+			dlayer.getRenderObjects().put(key, newList);
+		}
+		else {
+			ArrayList<RenderObject> currList = dlayer.getRenderObjects().get(key);
+			currList.add(obj);
+		}
+	}
+	
 	public void removeRenderObject(int key, Tile targetTile) {
 		RenderObject toRemove = targetTile.getRenderObj();
 		dlayer.getRenderObjects().get(key).remove(toRemove);

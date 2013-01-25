@@ -24,13 +24,14 @@ public class MenacingTouch extends ActivateSpell{
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();
 	}
@@ -46,12 +47,12 @@ public class MenacingTouch extends ActivateSpell{
 		}
 		
 		public void run(){
-			resetDefaultState();
 			while(active){
 				if (playergui.getTargetPlayer().getPlayerGui().getSpellList().size() == 0) {
 					failureToPlay("Target player does not have cards to select!\n");
 				}
 				else {
+					setCheckSuccess(true);
 					Random rand = new Random();
 					Player targetPlayer = playergui.getTargetPlayer();
 					PlayerGui tGui = targetPlayer.getPlayerGui();
@@ -78,7 +79,6 @@ public class MenacingTouch extends ActivateSpell{
 					setActive(false);
 				}
 			}
-			setActive(true);
 			return;
 		}
 	}

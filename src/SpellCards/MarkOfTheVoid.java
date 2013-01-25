@@ -28,6 +28,12 @@ public class MarkOfTheVoid extends ActivateSpell{
 	public boolean runEffect() {
 		init thread = new init(dlayer, gps);
 		thread.start();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
+		}
 		return isSuccessRun();  //no possible way for exception, so just return true.
 	}
 	
@@ -48,23 +54,21 @@ public class MarkOfTheVoid extends ActivateSpell{
 			try {
 				while(active){
 					playergui.setTextPane("Please select an empty tile (except checkpoint and adjacent to checkpoint tiles) to mark.\n");
-					gps.setTargetTile(null);
+					gps.setSpellTargetTile(null);
 					gps.setState(STATES.USE_SPELL_STATE);
-					while (gps.getTargetTile() == null) {
+					while (gps.getSpellTargetTile() == null) {
 						sleep(10);
 					}
-					targetTile = gps.getTargetTile();
+					targetTile = gps.getSpellTargetTile();
 					//conditions for eligibility
 					if (targetTile.getRingNum() == 7 || (targetTile.getRingNum() == 6 && targetTile.getTileID() == Tile.ADJCHK1 || targetTile.getTileID() == Tile.ADJCHK2 || 
 							targetTile.getTileID() == Tile.ADJCHK3 || targetTile.getTileID() == Tile.ADJCHK4) || targetTile.isOccupied()) {
-						gps.setTargetTile(null);
+						gps.setSpellTargetTile(null);
 						gps.setState(returnState);
 						failureToPlay("Target tile cannot be used. Make sure requirements are met.\n");
 					}
 					else {
-						String message = ("Player " + playergui.getPlayer().getColor() + " has selected (" + 
-								targetTile.getRingNum() + ", " + targetTile.getTileID() + ").\n");
-						writeToAllPlayers(message);
+						setCheckSuccess(true);
 						gps.setState(returnState);
 						//store new unavailables to the tile.
 						for (AdjacentTile avail : targetTile.getAvailableAdjTiles()) {
@@ -90,12 +94,11 @@ public class MarkOfTheVoid extends ActivateSpell{
 							}
 						}
 						//store the new object to render.
-						storeRenderObject(RenderObject.MARK_OF_THE_VOID, targetTile, new Image("res/MarkOfTheVoid.png"));
+						storeRenderObject(RenderObject.MARK_OF_THE_VOID, targetTile, gps.getMarkOfTheVoid());
 						setActive(false);
 					}
 				}
-			} catch (InterruptedException e) {} catch (SlickException e) {}
-			setActive(true); //resetting the active boolean.
+			} catch (InterruptedException e) {}
 			return;
 		}
 	}

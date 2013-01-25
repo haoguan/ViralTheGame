@@ -18,13 +18,14 @@ public class PlantedBomb extends ActivateSpell{
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();
 	}
@@ -41,12 +42,12 @@ public class PlantedBomb extends ActivateSpell{
 		
 		public void run(){
 			STATES returnState = gps.getCurrentState();
-			resetDefaultState();
 			while(active){
 				if (playergui.getTargetPlayer().getCurrentTile().getNumCells() == 0) {
 					failureToPlay("The target player's current tile has no cells.\n");
 				}
 				else {
+					setCheckSuccess(true);
 					gps.setState(STATES.USE_SPELL_STATE);
 					//remove cell from targetTile.
 					for (Player player : gps.getPlayers()) {
@@ -57,7 +58,6 @@ public class PlantedBomb extends ActivateSpell{
 					setActive(false);
 				}
 			}
-			setActive(true); //resetting the active boolean.
 			return;
 		}
 	}

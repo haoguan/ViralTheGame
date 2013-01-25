@@ -24,15 +24,6 @@ public class Updraft extends ActivateSpell{
 				move.remove();
 			}
 		}
-//		ArrayList<Tile> toRemove = new ArrayList<Tile>();
-//		for (Tile posMove : dlayer.getPossibleMoves()) {
-//			if (posMove.getRingNum() < gps.getCurrentPlayer().getCurrentTile().getRingNum()) {
-//				toRemove.add(posMove);
-//			}
-//		}
-//		for (Tile remove : toRemove) {
-//			dlayer.getPossibleMoves().remove(remove);
-//		}
 		resetRolled();
 		return isSuccessRun();
 	}	

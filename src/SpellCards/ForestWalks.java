@@ -21,6 +21,7 @@ public class ForestWalks extends ActivateSpell {
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		Player affPlayer = gps.getCurrentPlayer();
 		init thread = new init(affPlayer);
 		thread.start();
@@ -36,7 +37,6 @@ public class ForestWalks extends ActivateSpell {
 		}
 		
 		public void run() {
-			resetDefaultState();
 			while(active){
 				try {
 					if(gps.getCurrentPlayer() == affectedPlayer && gps.getCurrentState() == STATES.PRE_MOVEMENT_STATE){

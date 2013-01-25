@@ -21,13 +21,14 @@ public class RingPush extends ActivateSpell{
 
 
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();
 	}
@@ -54,6 +55,7 @@ public class RingPush extends ActivateSpell{
 						failureToPlay("Target player has no upper ring!\n");
 					}
 					else {
+						setCheckSuccess(true);
 						Player targetPlayer = playergui.getTargetPlayer();
 						ArrayList<Tile> upperAdjs;
 						if (targetPlayer.getCurrentTile().getRingNum() == 0) {
@@ -77,7 +79,6 @@ public class RingPush extends ActivateSpell{
 //					e.printStackTrace();
 //				}
 			}
-			setActive(true); //resetting the active boolean.
 			return;
 		}
 	}

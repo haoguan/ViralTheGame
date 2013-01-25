@@ -19,7 +19,7 @@ public class MirrorMirror extends ActivateSpell{
 		this.dlayer = dlayer;
 		this.gps = gps;
 		try {
-			fx = new Sound("res/mirror.wav");
+			fx = new Sound("res/GamePlayState/Sounds/mirror.wav");
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
@@ -28,15 +28,10 @@ public class MirrorMirror extends ActivateSpell{
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return isSuccessRun();
+		return isSuccessRun(); //never fails.
 	}
 	
 	class init extends Thread{
@@ -50,7 +45,6 @@ public class MirrorMirror extends ActivateSpell{
 		}
 		
 		public void run(){
-			resetDefaultState();
 			while(active){
 //				try {
 //					if (playergui.getTargetPlayer() == null) {
@@ -80,7 +74,6 @@ public class MirrorMirror extends ActivateSpell{
 //					e.printStackTrace();
 //				}
 			}
-			setActive(true); //resetting the active boolean.
 			return;
 		}
 	}

@@ -22,13 +22,14 @@ public class RingPull extends ActivateSpell{
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();
 	}
@@ -44,13 +45,14 @@ public class RingPull extends ActivateSpell{
 		}
 		
 		public void run(){
-			resetDefaultState();
 			STATES returnState = gps.getCurrentState();
 			while(active){
 				if (playergui.getTargetPlayer().getCurrentTile().getRingNum() == 0) {
+					gps.setState(returnState);
 					failureToPlay("Target player has no lower ring!\n");
 				}
 				else {
+					setCheckSuccess(true);
 					gps.setState(STATES.USE_SPELL_STATE);
 					Player targetPlayer = playergui.getTargetPlayer();
 					ArrayList<Tile> lowerAdjs = targetPlayer.getCurrentTile().findLowerAdjTiles(targetPlayer.getCurrentTile());
@@ -66,7 +68,6 @@ public class RingPull extends ActivateSpell{
 					resetRolled();
 					gps.setState(returnState);
 				}
-				setActive(true); //resetting the active boolean.
 				return;
 			}
 		}

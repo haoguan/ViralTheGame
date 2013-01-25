@@ -20,6 +20,7 @@ public class Prohibition extends ActivateSpell{
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
 		return isSuccessRun();  //no possible way for exception, so just return true.
@@ -39,7 +40,6 @@ public class Prohibition extends ActivateSpell{
 			int numTurnsLeft = 4;
 			boolean turnLogged = false; //variable to allow numTurnsLeft to decrement.
 			int[] quadBounds = {0, 90, 180, 270, 360};
-			resetDefaultState();
 			while(active){
 				if (gps.getCurrentState() == STATES.CHANGE_PLAYER_STATE)
 					turnLogged = false;
@@ -104,7 +104,6 @@ public class Prohibition extends ActivateSpell{
 					}
 				}	
 			}
-			setActive(true); //resetting the active boolean.
 			return;
 		}
 	}

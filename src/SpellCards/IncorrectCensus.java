@@ -1,18 +1,19 @@
 package SpellCards;
 
+import java.util.Iterator;
+
 import game.Cell;
 import game.DataLayer;
 import game.Tile;
-import java.util.Iterator;
 import main.GamePlayState;
 import main.GamePlayState.STATES;
 
-public class Payday extends ActivateSpell {
+public class IncorrectCensus extends ActivateSpell {
 
 	DataLayer dlayer;
 	GamePlayState gps;
 	
-	public Payday(DataLayer dlayer, GamePlayState gps) {
+	public IncorrectCensus(DataLayer dlayer, GamePlayState gps) {
 		this.dlayer = dlayer;
 		this.gps = gps;
 	}
@@ -43,45 +44,52 @@ public class Payday extends ActivateSpell {
 		
 		public void run(){
 			STATES returnState = gps.getCurrentState();
-			Tile currTile = playergui.getPlayer().getCurrentTile();
+			Tile targetTile = null;
 			boolean first = true;
 			boolean addedSpots = false;
 			try {
 				while(active){
 					if (first) {
+						playergui.setTextPane("Please select a tile (except checkpoint tiles) to double your own cells.\n");
+						gps.setSpellTargetTile(null);
 						gps.setState(STATES.USE_SPELL_STATE);
-						if (currTile.getElement() == Tile.CHECKPOINT) {
+						while (gps.getSpellTargetTile() == null) {
+							sleep(5);
+						}
+						targetTile = gps.getSpellTargetTile();
+						
+						if (targetTile.getRingNum() == 7) {
+							gps.setSpellTargetTile(null);
 							gps.setState(returnState);
-							failureToPlay("Cannot use on checkpoint tiles.\n");
+							failureToPlay("Cannot select checkpoint tiles.\n");
 						}
 						else {
 							int numPlayerCells = 0;
-							for (Iterator<Cell> iter = currTile.getCellStorage().keySet().iterator(); iter.hasNext(); ) {
+							for (Iterator<Cell> iter = targetTile.getCellStorage().keySet().iterator(); iter.hasNext(); ) {
 								Cell nextCell = iter.next();
-								if (playergui.getPlayer() == currTile.getCellStorage().get(nextCell)) {
+								if (playergui.getPlayer() == targetTile.getCellStorage().get(nextCell)) {
 									numPlayerCells++;
 								}
 							}
 							if (numPlayerCells == 0) {
+								gps.setSpellTargetTile(null);
 								gps.setState(returnState);
 								failureToPlay("You currently own no cells on target tile.\n");
 							}
 							else {
 								setCheckSuccess(true);
-								//only add spots if total cells will be greater than 2 after double.
-								if (currTile.getNumCells() > 1) {
-									currTile.setCellParts(true);
+								if (targetTile.getNumCells() > 1) {
+									targetTile.setCellParts(true);
 									addedSpots = true;
 								}
 								//add 2 more cells.
 								if (numPlayerCells == 2) {
-									currTile.addCell(playergui.getPlayer(), gps, 2);
+									targetTile.addCell(playergui.getPlayer(), gps, 2);
 								}
 								else {
 									//only add 1.
-									currTile.addCell(playergui.getPlayer(), gps);
+									targetTile.addCell(playergui.getPlayer(), gps);
 								}
-								playergui.setTextPane("Doubled cells on current tile.\n");
 							}
 							gps.setState(returnState);
 							if (!addedSpots) {
@@ -91,12 +99,12 @@ public class Payday extends ActivateSpell {
 						}
 					}
 					
-					if (addedSpots && currTile.getNumCells() <= 2) {
-						currTile.getCellParts().clear(); //erase positions and restart.
-						currTile.setCellParts(false);
-						for (Iterator<Cell> iter = currTile.getCellStorage().keySet().iterator(); iter.hasNext(); ) {
+					if (addedSpots && targetTile.getNumCells() <= 2) {
+						targetTile.getCellParts().clear(); //erase positions and restart.
+						targetTile.setCellParts(false);
+						for (Iterator<Cell> iter = targetTile.getCellStorage().keySet().iterator(); iter.hasNext(); ) {
 							Cell nextCell = iter.next();
-							nextCell.setCurrentPosition(currTile.getCellPosition(nextCell)); //reset the position to be aligned.
+							nextCell.setCurrentPosition(targetTile.getCellPosition(nextCell)); //reset the position to be aligned.
 						}
 						setActive(false);
 					}

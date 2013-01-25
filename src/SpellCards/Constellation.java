@@ -23,24 +23,25 @@ public class Constellation extends ActivateSpell {
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		//requires four different threads for each of the different player gui's to complete separate work.
 		Player player1 = gps.getPlayers()[0];
 		Player player2 = gps.getPlayers()[1];
 		Player player3 = gps.getPlayers()[2];
 		Player player4 = gps.getPlayers()[3];
-		init thread1 = new init(dlayer, gps, player1.getPlayerGui());
-		init thread2 = new init(dlayer, gps, player2.getPlayerGui());
-		init thread3 = new init(dlayer, gps, player3.getPlayerGui());
-		init thread4 = new init(dlayer, gps, player4.getPlayerGui());
-		thread1.start();
-		thread2.start();
-		thread3.start();
-		thread4.start();
 		try {
+			init thread1 = new init(dlayer, gps, player1.getPlayerGui());
+			thread1.start();
 			thread1.join();
+			init thread2 = new init(dlayer, gps, player2.getPlayerGui());
+			thread2.start();
 			thread2.join();
+			init thread3 = new init(dlayer, gps, player3.getPlayerGui());
+			thread3.start();
 			thread3.join();
-			thread4.join();
+			init thread4 = new init(dlayer, gps, player4.getPlayerGui());
+			thread4.start();
+			thread4.join();		
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,85 +53,110 @@ public class Constellation extends ActivateSpell {
 		
 		DataLayer dlayer;
 		GamePlayState gps;
+		PlayerGui gui;
 		
 		public init(DataLayer dlayer, GamePlayState gps, PlayerGui gui) {
 			this.dlayer = dlayer;
 			this.gps = gps;
+			this.gui = gui;
 		}
 		
-		public boolean checkConstellation(int numPlayerCells) {
+		public boolean checkConstellation(Player player) {
 			boolean fire = false;
 			boolean water = false;
 			boolean wind = false;
 			boolean earth = false;
+			int numTrues = 0;
 			for (Integer ring : dlayer.getElements().keySet()) {
 				for (Tile tile : dlayer.getElements().get(ring)) {
 					switch (tile.getElement()) {
 					case Tile.FIRE:
-						fire = true;
+						if (!fire && tile.containsCell(player)) {
+							fire = true;
+							numTrues++;
+						}
 						break;
 					case Tile.WATER:
-						water = true;
+						if (!water && tile.containsCell(player)) {
+							water = true;
+							numTrues++;
+						}
 						break;
 					case Tile.WIND:
-						wind = true;
+						if (!wind && tile.containsCell(player)) {
+							wind = true;
+							numTrues++;
+						}
 						break;
 					case Tile.EARTH:
-						earth = true;
+						if (!earth && tile.containsCell(player)) {
+							earth = true;
+							numTrues++;
+						}
 						break;
 					}
 				}
 			}
-			if (fire && water && wind && earth) 
+			if (player.getNumCells() < 4 && numTrues == player.getNumCells()) {
 				return true;
-			return false;
+			}
+			else if (player.getNumCells() >= 4 && numTrues == 4) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		
 		public void run(){
 			STATES returnState = gps.getCurrentState();
-//			ArrayList<Tile> targetedTiles = new ArrayList<Tile>();
 			Tile targetTile;
 			Tile lastTargetTile;
-			resetDefaultState();
+			boolean errorPrint = false;
 			try {
 				while(active){
-					if (checkConstellation(playergui.getPlayer().getNumCells())) {
-						playergui.setTextPane("Already completed constellation.\n");
+					if (checkConstellation(gui.getPlayer())) {
+						gui.setTextPane("Already completed constellation.\n");
 						gps.setState(returnState);
 						setActive(false);
 					}
 					else {
-						playergui.setTextPane("Please reorganize your cells to having at least one in each element.\n");
+						gui.setTextPane("Please reorganize your cells to having at least one in each element.\n");
 						gps.setState(STATES.USE_SPELL_STATE);
-						while (!checkConstellation(playergui.getPlayer().getNumCells())) {
+						while (!checkConstellation(gui.getPlayer())) {
 							gps.setNewInput(false);
-							playergui.setTextPane("Please select an element tile with your cells.\n");
+							if (!errorPrint) {
+								gui.setTextPane("Please select an element tile with your cells.\n");
+								errorPrint = false;
+							}
 							while (!gps.getNewInput()) {
 								sleep(5);
 							}
-							targetTile = gps.getTargetTile();
-							if (!targetTile.containsCell(playergui.getPlayer()) || targetTile.getElement() >= Tile.EARTH) {
-								playergui.setTextPane("Please select an appropriate tile.\n");
+							targetTile = gps.getSpellTargetTile();
+							if (!targetTile.containsCell(gui.getPlayer())) {
+								gui.setTextPane("Please select an appropriate source.\n");
+								errorPrint = true;
 							}
 							else {
 								lastTargetTile = targetTile;
 								gps.setNewInput(false);
-								playergui.setTextPane("Please select a destination element tile.\n");
+								gui.setTextPane("Please select a destination element tile.\n");
 								while (!gps.getNewInput()) {
 									sleep(5);
 								}
-								targetTile = gps.getTargetTile();
-								if (targetTile.getElement() >= Tile.EARTH) {
-									playergui.setTextPane("Please select an appropriate tile.\n");
+								targetTile = gps.getSpellTargetTile();
+								if (targetTile.getElement() > Tile.EARTH) {
+									gui.setTextPane("Please select an appropriate destination.\n");
+									errorPrint = true;
 								}
 								else {
 									//remove one cell from old element tile and add to new one.
-									lastTargetTile.removeCell(playergui.getPlayer());
-									gps.addCell(playergui.getPlayer(), targetTile, gps);
+									lastTargetTile.removeCell(gui.getPlayer(), true);
+									targetTile.addCell(gui.getPlayer(), gps);
 								}
 							}
 						}
-						playergui.setTextPane("Successfully completed constellation.\n");
+						gui.setTextPane("Successfully completed constellation.\n");
 						gps.setState(returnState);
 						setActive(false);
 					}

@@ -22,13 +22,14 @@ public class Tsunami extends ActivateSpell{
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//this while loop allows for thread to not be finished and still return correct result earlier.
+		while (!checkSuccess) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {}
 		}
 		return isSuccessRun();
 	}
@@ -46,23 +47,23 @@ public class Tsunami extends ActivateSpell{
 		public void run(){
 			STATES returnState = gps.getCurrentState();
 			Tile targetTile;
-			resetDefaultState();
 			try {
 				while(active){
-					playergui.setTextPane("Please select a tile (except checkpoint tiles) to bomb.\n");
-					gps.setTargetTile(null);
+					playergui.setTextPane("Please select a source tile.\n");
+					gps.setSpellTargetTile(null);
 					gps.setState(STATES.USE_SPELL_STATE);
-					while (gps.getTargetTile() == null) {
+					while (gps.getSpellTargetTile() == null) {
 						sleep(5);
 					}
-					targetTile = gps.getTargetTile();
+					targetTile = gps.getSpellTargetTile();
 					
 					if (targetTile.getRingNum() == 7) {
-						gps.setTargetTile(null);
+						gps.setSpellTargetTile(null);
 						gps.setState(returnState);
 						failureToPlay("Cannot select checkpoint tiles.\n");
 					}
 					else {
+						setCheckSuccess(true);
 						String message = ("Player " + playergui.getPlayer().getColor() + " has selected (" + 
 								targetTile.getRingNum() + ", " + targetTile.getTileID() + ").\n");
 						writeToAllPlayers(message);
@@ -91,7 +92,6 @@ public class Tsunami extends ActivateSpell{
 						setActive(false);
 					}
 				}
-				setActive(true); //resetting the active boolean.
 				return;
 			} catch (InterruptedException e) {}
 		}

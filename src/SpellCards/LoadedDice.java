@@ -18,6 +18,7 @@ public class LoadedDice extends ActivateSpell{
 	
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
 		return isSuccessRun();
@@ -35,7 +36,6 @@ public class LoadedDice extends ActivateSpell{
 		
 		public void run(){
 			STATES returnState = gps.getCurrentState();
-			resetDefaultState();
 			try {
 				while(active){
 					playergui.setTextPane("Please roll the dice.\n");
@@ -66,7 +66,6 @@ public class LoadedDice extends ActivateSpell{
 					gps.setState(returnState);
 					setActive(false);
 				}
-				setActive(true); //resetting the active boolean.
 				return;
 			} catch (InterruptedException e) {}
 		}

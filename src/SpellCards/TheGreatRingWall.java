@@ -21,6 +21,7 @@ public class TheGreatRingWall extends ActivateSpell{
 
 	@Override
 	public boolean runEffect() {
+		resetDefaultState();
 		init thread = new init(dlayer, gps);
 		thread.start();
 		return isSuccessRun();  //no possible way for exception, so just return true.
@@ -43,18 +44,17 @@ public class TheGreatRingWall extends ActivateSpell{
 			STATES returnState = gps.getCurrentState();
 			Tile targetTile;
 			int targetRing = 0;
-			resetDefaultState();
 			try {
 				while(active){
 					if (first) {
 						playergui.setTextPane("Please select a tile located within target ring.\n");
-						gps.setTargetTile(null);
+						gps.setSpellTargetTile(null);
 						gps.setState(STATES.USE_SPELL_STATE);
 						gps.setTrackMouse(true);
-						while (gps.getTargetTile() == null) {
+						while (gps.getSpellTargetTile() == null) {
 							sleep(5);
 						}
-						targetTile = gps.getTargetTile();
+						targetTile = gps.getSpellTargetTile();
 						targetRing = targetTile.getRingNum();
 						String message = ("Player " + playergui.getPlayer().getColor() + " has selected ring " + targetTile.getRingNum() + ".\n");
 						writeToAllPlayers(message);
@@ -153,10 +153,7 @@ public class TheGreatRingWall extends ActivateSpell{
 						sleep(5);
 					}	
 				}
-			} catch (InterruptedException e) {
-				
-			}
-			setActive(true); //resetting the active boolean.
+			} catch (InterruptedException e) {}
 			return;
 		}
 	}
