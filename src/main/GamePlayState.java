@@ -38,20 +38,6 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	DataLayer dlayer;
 	Random rand = new Random();
 	int stateID = 1;
-	Tile targetTile = null;
-
-//	// State representations.
-//	public static int START_GAME_STATE = 0;
-//	public static int CHANGE_PLAYER_STATE = 1;
-//	public static int ROLL_STATE = 2;
-//	public static int DRAW_CARD_STATE = 3;
-//	public static int PRE_MOVEMENT_STATE = 4;
-//	public static int MOVEMENT_STATE = 5;
-//	public static int ACTIONS_STATE = 6;
-//	public static int PLANT_CELL_STATE = 7;
-//	public static int USE_SPELL_STATE = 8;
-//	public static int PAUSE_GAME_STATE = 9;
-//	public static int GAME_OVER_STATE = 10;
 
 	public enum STATES {
 		START_GAME_STATE, CHANGE_PLAYER_STATE, ROLL_STATE, DRAW_CARD_STATE, PRE_MOVEMENT_STATE, MOVEMENT_STATE, ACTIONS_STATE, 
@@ -62,13 +48,20 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	private Board board = null;
 	private TileFinder tileFinder = null;
 	private TurnManager turnManager = null;
-	public Tile destination;
-	public boolean confirmMove;
-	public int numRings = 8;
+	private Tile destination;
+	private boolean confirmMove;
+	private int numRings = 8;
 	
 	//renderObjects
 	Image markOfTheVoid;
 	Image seeker;
+	Image fire;
+	Image water;
+	Image wind;
+	Image earth;
+	Image beaconOfLight;
+	Image beaconOfReclamation;
+	Image beaconOfHaste;
 
 	// planting cell variables
 	public boolean confirmCell;
@@ -90,8 +83,9 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	Image player1pic;
 	Image player2pic;
 	Image player3pic;
-	Sound fx = null;
-	Sound fx2 = null;
+	Sound jump = null;
+	Sound jump2 = null;
+	Sound removeCell = null;
 
 	double currAngle;
 	double currRad;
@@ -106,9 +100,10 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	// state variables.
 	public STATES currentState = null;
 	boolean actionsInit = true;
-	// boolean plantedCell = false;
-	// boolean usedCard = false;
-	// boolean usedClassSpell = false;
+	
+	//targetting tiles
+	Tile moveTargetTile = null;
+	Tile spellTargetTile = null;
 
 	// background rendering variables.
 	Image background = null;
@@ -143,8 +138,8 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	int tileSpeed;
 	// PlayerGui playergui = new PlayerGui(this);
 	Integer[] tileNum = { 1, 4, 8, 8, 16, 16, 32, 4 };
-	String spellFile = "res/Spell.txt";
-	String classFile = "res/Class.txt";
+	String spellFile = "res/Cards/Spell.txt";
+	String classFile = "res/Cards/Class.txt";
 
 	public GamePlayState(int stateID) {
 		this.stateID = stateID;
@@ -156,28 +151,36 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 
 		// load the board background.
-		background = new Image("res/ViralBoardFinal.jpg"); // 15in x 15in
+		background = new Image("res/GamePlayState/Background/ViralBoardFinal.jpg"); // 15in x 15in
 															// with 150
 															// pix/inch
 		background.setFilter(Image.FILTER_NEAREST);
-		fx = new Sound("res/jump.wav");
-		fx2 = new Sound("res/jump2.wav");
+		jump = new Sound("res/GamePlayState/Sounds/jump.wav");
+		jump2 = new Sound("res/GamePlayState/Sounds/jump2.wav");
+		removeCell = new Sound("res/GamePlayState/Sounds/removeCells.wav");
 
 		// load players
-		player0pic = new Image("res/slime0.png");
-		player1pic = new Image("res/slime1.png");
-		player2pic = new Image("res/slime2.png");
-		player3pic = new Image("res/slime3.png");
+		player0pic = new Image("res/GamePlayState/Players/slime0.png");
+		player1pic = new Image("res/GamePlayState/Players/slime1.png");
+		player2pic = new Image("res/GamePlayState/Players/slime2.png");
+		player3pic = new Image("res/GamePlayState/Players/slime3.png");
 
 		// load cell images
-		player0cell = new Image("res/PinkCell.png");
-		player1cell = new Image("res/GreenCell.png");
-		player2cell = new Image("res/BlueCell.png");
-		player3cell = new Image("res/BlackCell.png");
+		player0cell = new Image("res/GamePlayState/Cells/PinkCell.png");
+		player1cell = new Image("res/GamePlayState/Cells/GreenCell.png");
+		player2cell = new Image("res/GamePlayState/Cells/BlueCell.png");
+		player3cell = new Image("res/GamePlayState/Cells/BlackCell.png");
 		
 		//load renderObjects
-		markOfTheVoid = new Image("res/MarkOfTheVoid.png");
-		seeker = new Image("res/Seeker.png");
+		markOfTheVoid = new Image("res/GamePlayState/RenderObjects/MarkOfTheVoid.png");
+		seeker = new Image("res/GamePlayState/RenderObjects/Seeker.png");
+		fire = new Image("res/GamePlayState/RenderObjects/fire.png");
+		water = new Image("res/GamePlayState/RenderObjects/water.png");
+		wind = new Image("res/GamePlayState/RenderObjects/wind.png");
+		earth = new Image("res/GamePlayState/RenderObjects/earth.png");
+		beaconOfLight = new Image("res/GamePlayState/RenderObjects/BeaconOfLight.png");
+		beaconOfReclamation = new Image("res/GamePlayState/RenderObjects/BeaconOfReclamation.png");
+		beaconOfHaste = new Image("res/GamePlayState/RenderObjects/BeaconOfHaste.png");
 
 		// load the fonts to be used.
 		Font font = new Font("Verdana", Font.BOLD, 20);
@@ -359,8 +362,8 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 //				}
 //			}
 //			if (canPlant) {
-				fx2.play();
-				addCell(currentPlayer, currentPlayer.getCurrentTile(), this);
+				jump2.play();
+				currentPlayer.getCurrentTile().addCell(currentPlayer, this);
 //				Cell newCell = new Cell(currentPlayer, currentPlayer.getCurrentTile());
 //				float[] cellCoords = tileFinder.angleToPixels(newCell.getCurrentPosition().getPositionRadius(), newCell.getCurrentPosition().getAngle());
 //				newCell.setCellCoords(cellCoords);
@@ -398,49 +401,6 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 		// check if user wants to zoom.
 		checkZoomAndDisplay(gc, delta);
 
-	}
-	
-	/**
-	 * addCell(3 params) adds one cell to targetTile for currentPlayer.
-	 * @param currentPlayer is the player that plants the cell.
-	 * @param targetTile is the tile where the cell will be located.
-	 * @param gps is the GamePlayState instance where cell will be controlled.
-	 */
-	public void addCell(Player currentPlayer, Tile targetTile, GamePlayState gps) {
-		Cell newCell = new Cell(currentPlayer, targetTile);
-		float[] cellCoords = gps.getTileFinder().angleToPixels(newCell.getCurrentPosition().getPositionRadius(), newCell.getCurrentPosition().getAngle());
-		newCell.setCellCoords(cellCoords);
-		newCell.setImage(gps.getCellImage(currentPlayer));
-		currentPlayer.getCellList().add(newCell);
-		// add element to player's repository of elements.
-		int element = targetTile.getElement();
-		currentPlayer.addElement(element);
-		// decrease cell count
-		targetTile.addToCellStorage(currentPlayer, newCell);
-		currentPlayer.decrementCellLeft();
-	}
-
-	/**
-	 * addCell (4 params) adds a variable amount of cells to targetTile for currentPlayer.
-	 * @param currentPlayer is the player that plants the cell.
-	 * @param targetTile is the tile where the cell will be located.
-	 * @param gps is the GamePlayState instance where cell will be controlled.
-	 * @param numToAdd is the number of cells to add to the tile.
-	 */
-	public void addCell(Player currentPlayer, Tile targetTile, GamePlayState gps, int numToAdd) {
-		for (int i = 0; i < numToAdd; i++) {
-			Cell newCell = new Cell(currentPlayer, targetTile);
-			float[] cellCoords = gps.getTileFinder().angleToPixels(newCell.getCurrentPosition().getPositionRadius(), newCell.getCurrentPosition().getAngle());
-			newCell.setCellCoords(cellCoords);
-			newCell.setImage(gps.getCellImage(currentPlayer));
-			currentPlayer.getCellList().add(newCell);
-			// add element to player's repository of elements.
-			int element = targetTile.getElement();
-			currentPlayer.addElement(element);
-			// decrease cell count
-			targetTile.addToCellStorage(currentPlayer, newCell);
-			currentPlayer.decrementCellLeft();
-		}
 	}
 
 	/**
@@ -495,7 +455,7 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 				currRad += proportionalRad;
 				currAngle += proportionalAng;
 				if (tileSpeed == 20) {
-					fx.play();
+					jump.play();
 				}
 				if (currAngle < 0) {
 					currAngle += 360;
@@ -539,7 +499,7 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 				break;
 			}
 			currentPlayer.getPlayerGui().setEndButton(true);
-			setTargetTile(null); //reset targetTile
+			setMoveTargetTile(null); //reset targetTile
 			currentState = STATES.ACTIONS_STATE;
 		}
 	}
@@ -585,7 +545,7 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 //			System.out.println();
 
 		} else {
-			int newRoll = roll - 1;
+			int newRoll = roll + currTile.getAlterRoll();
 			ArrayList<Tile> banned = new ArrayList<Tile>();
 			if (hitSixth && !specialAdj) {
 				banned = currTile.findUpperAdjTiles(currTile);
@@ -826,16 +786,16 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 		if (currentState == STATES.PRE_MOVEMENT_STATE) {
 			double targetRadius = findRadius(x, y);
 			double targetAngle = findAngle(x, y);
-			targetTile = tileFinder.findTile(targetRadius, targetAngle);
-			if (!dlayer.getPossibleMoves().contains(targetTile)) {
+			moveTargetTile = tileFinder.findTile(targetRadius, targetAngle);
+			if (!dlayer.getPossibleMoves().contains(moveTargetTile)) {
 				currentPlayer.getPlayerGui().setMoveButton(false);
 				currentPlayer.getPlayerGui().setTextPane("Not a valid move! Try Again\n");
 			} else {
 				currentPlayer.getPlayerGui().setMoveButton(true);
-				currentPlayer.getPlayerGui().setTextPane("You clicked (" + targetTile.getRingNum() + "," + targetTile.getTileID() + ").\n");
+				currentPlayer.getPlayerGui().setTextPane("You clicked (" + moveTargetTile.getRingNum() + "," + moveTargetTile.getTileID() + ").\n");
 			}
 			
-			if (targetTile != null) {
+			if (moveTargetTile != null) {
 				// System.out.println("Low Radius: " +
 				// targetTile.getLowRadius());
 				// System.out.println("High Radius: " +
@@ -843,13 +803,21 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 				// System.out.println("Low Angle: " + targetTile.getLowAngle());
 				// System.out.println("High Angle: " +
 				// targetTile.getHighAngle());
-				element = targetTile.getElement();
+				element = moveTargetTile.getElement();
+				System.out.println("moveTargetTile: (" + moveTargetTile.getRingNum() + ", " + moveTargetTile.getTileID() + ")");
 			}
-		} else if (currentState == STATES.USE_SPELL_STATE) {
+			if (spellTargetTile != null) {
+				System.out.println("spellTargetTile: (" + spellTargetTile.getRingNum() + ", " + spellTargetTile.getTileID() + ")");
+			}
+		} else if (currentState == STATES.USE_SPELL_STATE || currentState == STATES.ACTIONS_STATE) {
 			double targetRadius = findRadius(x, y);
 			double targetAngle = findAngle(x, y);
-			targetTile = tileFinder.findTile(targetRadius, targetAngle);
+			spellTargetTile = tileFinder.findTile(targetRadius, targetAngle);
 			setNewInput(true);
+			if (moveTargetTile != null)
+				System.out.println("moveTargetTile: (" + moveTargetTile.getRingNum() + ", " + moveTargetTile.getTileID() + ")");	
+			if (spellTargetTile != null)
+				System.out.println("spellTargetTile: (" + spellTargetTile.getRingNum() + ", " + spellTargetTile.getTileID() + ")");
 		}
 		mouseClicked = true;
 		mouseX = x;
@@ -880,8 +848,31 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 			return player1cell;
 		case 3:
 			return player2cell;
-		default:
+		case 4:
 			return player3cell;
+		default:
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * getElementImage() returns the correct image for the input element.
+	 * @param element is the integer representation of the element.
+	 * @return the Image of the element.
+	 */
+	public Image getElementImage(int element) {
+		switch (element) {
+		case 0:
+			return fire;
+		case 1:
+			return water;
+		case 2:
+			return wind;
+		case 3:
+			return earth;
+		default:
+			return null;
 		}
 	}
 
@@ -917,19 +908,27 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	}
 
 	public void setDestination() {
-		this.destination = targetTile;
+		this.destination = moveTargetTile;
 	}
 
 	public Tile getDestination() {
 		return destination;
 	}
 
-	public Tile getTargetTile() {
-		return targetTile;
+	public Tile getMoveTargetTile() {
+		return moveTargetTile;
 	}
 	
-	public void setTargetTile(Tile tile) {
-		targetTile = tile;
+	public void setMoveTargetTile(Tile tile) {
+		moveTargetTile = tile;
+	}
+	
+	public Tile getSpellTargetTile() {
+		return spellTargetTile;
+	}
+	
+	public void setSpellTargetTile(Tile tile) {
+		spellTargetTile = tile;
 	}
 	
 	public boolean getNewInput() {
@@ -950,5 +949,44 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 
 	public void setConfirmCell(boolean status) {
 		confirmCell = status;
+	}
+	
+	
+	//RenderObject Getters.
+
+	public Image getMarkOfTheVoid() {
+		return markOfTheVoid;
+	}
+
+	public Image getSeeker() {
+		return seeker;
+	}
+
+	public Image getFire() {
+		return fire;
+	}
+
+	public Image getWater() {
+		return water;
+	}
+	
+	public Image getWind() {
+		return wind;
+	}
+	
+	public Image getEarth() {
+		return earth;
+	}
+	
+	public Image getBeaconOfLight() {
+		return beaconOfLight;
+	}
+	
+	public Image getBeaconOfReclamation() {
+		return beaconOfReclamation;
+	}
+	
+	public Image getBeaconOfHaste() {
+		return beaconOfHaste;
 	}
 }

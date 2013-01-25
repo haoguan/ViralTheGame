@@ -38,10 +38,10 @@ public class MainMenuState extends BasicGameState {
 	public void init(GameContainer gc, StateBasedGame sbg)
 			throws SlickException {
 
-		background = new Image("res/background.png");
+		background = new Image("res/MainMenuState/mainmenu.png");
 
 		// load menu buttons
-		Image menuOptions = new Image("res/mainMenuButtons.png");
+		Image menuOptions = new Image("res/MainMenuState/mainMenuButtons.png");
 		startGameOption = menuOptions.getSubImage(0, 0, 377, 71);
 		exitOption = menuOptions.getSubImage(0, 71, 377, 71);
 	}
