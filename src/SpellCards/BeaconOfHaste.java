@@ -1,11 +1,9 @@
 package SpellCards;
 
 import game.DataLayer;
-import game.Player;
 import game.RenderObject;
 import game.Tile;
 import main.GamePlayState;
-import main.GamePlayState.STATES;
 
 public class BeaconOfHaste extends ActivateSpell {
 	
@@ -38,11 +36,7 @@ public class BeaconOfHaste extends ActivateSpell {
 		
 		public void run(){
 			boolean first = true;
-//			boolean removed = false;
-//			Tile targetTile = null;
-//			Player currPlayer = gps.getCurrentPlayer(); //must use gps because playergui is only attached to one player.
 			Tile center = dlayer.getRingList().get(0).get(0);
-//			Player[] players = gps.getPlayers();
 			long startTime = System.currentTimeMillis();
 			try {
 				while(active){
