@@ -81,8 +81,6 @@ public class AdjacentTile {
 		if (getClass() != obj.getClass())
 			return false;
 		AdjacentTile other = (AdjacentTile) obj;
-		if (available != other.available)
-			return false;
 		if (tile == null) {
 			if (other.tile != null)
 				return false;

@@ -53,6 +53,7 @@ public class BeaconOfHaste extends ActivateSpell {
 						if (center.getBeaconObj().getType() != RenderObject.BEACONOFHASTE) {
 							removeRenderObject(RenderObject.BEACONOFHASTE, center);
 							writeToAllPlayers("Beacon of Haste has been replaced.");
+							center.setAlterRoll(-1); //reset back to original
 							setActive(false);
 						}
 						startTime = System.currentTimeMillis();

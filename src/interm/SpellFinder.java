@@ -145,7 +145,7 @@ public class SpellFinder {
 		cards.put("Beacon of Light", new BeaconOfLight(dlayer, gps));
 		cards.put("Beacon of Reclamation", new BeaconOfReclamation(dlayer, gps));
 		cards.put("Beacon of Haste", new BeaconOfHaste(dlayer, gps));
-//		cards.put("Beacon of Void", new BeaconOfVoid(dlayer, gps));
+		cards.put("Beacon of Void", new BeaconOfVoid(dlayer, gps));
 //		cards.put("Law Abiding Citizen?", new LawAbidingCitizen(dlayer, gps));
 //		cards.put("Uncapped Mitosis", new UncappedMitosis(dlayer, gps));
 //		cards.put("Fruitless Endeavor", new FruitlessEndeavor(dlayer, gps));
@@ -204,6 +204,7 @@ public class SpellFinder {
 		setStates("Beacon of Light", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
 		setStates("Beacon of Reclamation", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
 		setStates("Beacon of Haste", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
+		setStates("Beacon of Void", GamePlayState.STATES.ROLL_STATE, GamePlayState.STATES.PRE_MOVEMENT_STATE, GamePlayState.STATES.ACTIONS_STATE);
 		
 	}
 

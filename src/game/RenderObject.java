@@ -20,6 +20,7 @@ public class RenderObject {
 	public final static int BEACONOFLIGHT = 6;
 	public final static int BEACONOFRECLAMATION = 7;
 	public final static int BEACONOFHASTE = 8;
+	public final static int BEACONOFVOID = 9;
 	
 	int type;
 	Image image;

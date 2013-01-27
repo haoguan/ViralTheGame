@@ -62,6 +62,7 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	Image beaconOfLight;
 	Image beaconOfReclamation;
 	Image beaconOfHaste;
+	Image beaconOfVoid;
 
 	// planting cell variables
 	public boolean confirmCell;
@@ -181,6 +182,7 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 		beaconOfLight = new Image("res/GamePlayState/RenderObjects/BeaconOfLight.png");
 		beaconOfReclamation = new Image("res/GamePlayState/RenderObjects/BeaconOfReclamation.png");
 		beaconOfHaste = new Image("res/GamePlayState/RenderObjects/BeaconOfHaste.png");
+		beaconOfVoid = new Image("res/GamePlayState/RenderObjects/BeaconOfVoid.png");
 
 		// load the fonts to be used.
 		Font font = new Font("Verdana", Font.BOLD, 20);
@@ -988,5 +990,9 @@ public class GamePlayState extends BasicGameState implements MouseListener {
 	
 	public Image getBeaconOfHaste() {
 		return beaconOfHaste;
+	}
+	
+	public Image getBeaconOfVoid() {
+		return beaconOfVoid;
 	}
 }
