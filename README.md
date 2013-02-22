@@ -1,7 +1,7 @@
 ViralTheGame
 ============
 
-The digital rendition of the newly designed board game, Viral.
+The digital ported version of the future critically acclaimed board game created by Jonathan Wu and Howard Guan.
 
 
 Created by Hao Guan and Jonathan Wu, 2012-2013
